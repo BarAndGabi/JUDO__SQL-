@@ -245,9 +245,11 @@ update judo.judokas
 set `wins` =`wins`+1
 where new.winner=judokas.id;
 
-battlesend$$
+end$$
 delimiter ;
- 
+ -- -----------------------------------------------------
+-- Procedures
+-- -----------------------------------------------------
   DELIMITER $$ 
 CREATE PROCEDURE JUDO.set_injury (IN judokas_id INT )
 BEGIN 
@@ -274,7 +276,9 @@ BEGIN
   DELIMITER ;
     
 USE JUDO;
-
+-- -----------------------------------------------------
+-- 	Inserts
+-- -----------------------------------------------------
 INSERT INTO JUDO.categorys (id,gender,`weight category`,`age range`)
 VALUES('MLY', 'M', 'light', 'young'),
 ('MHY', 'M', 'heavy', 'young'),
