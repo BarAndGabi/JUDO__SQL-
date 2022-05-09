@@ -154,20 +154,27 @@ CREATE TABLE IF NOT EXISTS `JUDO`.`fouls` (
   `id` INT NOT NULL,
   `foul type` ENUM('hard', 'soft') NULL DEFAULT NULL,
   `judokas_id` INT NOT NULL,
-  PRIMARY KEY (`id`, `judokas_id`),
+  `battles_id` INT NOT NULL,
+  `battles_judge_id` INT NOT NULL,
+  PRIMARY KEY (`id`, `judokas_id`, `battles_id`, `battles_judge_id`),
   INDEX `fk_fouls_judokas1_idx` (`judokas_id` ASC) VISIBLE,
+  INDEX `fk_fouls_battles1_idx` (`battles_id` ASC, `battles_judge_id` ASC) VISIBLE,
   CONSTRAINT `fk_fouls_judokas1`
     FOREIGN KEY (`judokas_id`)
-    REFERENCES `JUDO`.`judokas` (`id`))
+    REFERENCES `JUDO`.`judokas` (`id`),
+  CONSTRAINT `fk_fouls_battles1`
+    FOREIGN KEY (`battles_id` , `battles_judge_id`)
+    REFERENCES `JUDO`.`battles` (`id` , `judge_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
-
 
 -- -----------------------------------------------------
 -- Table `JUDO`.`sponsers`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `JUDO`.`sponsers` (
   `id` INT NOT NULL,
-  `name` VARCHAR(10) NOT NULL,
+  `name` VARCHAR(25) NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
@@ -211,12 +218,22 @@ where new.`judoka 1 id`=judokas.id;
 end$$
 delimiter $$
 
+create TRIGGER trigger_judge after insert 
+on JUDO.battles
+for each row begin
+update judo.judges
+set `battle count` =`battle count`+1
+where new.`judge_id`=judges.id;
+
+end$$
+delimiter $$
+
 create TRIGGER trigger_j2 after insert 
 on JUDO.battles
 for each row begin
 update judo.judokas
 set `game played` =`game played`+1
-where new.`judoka 1 id`=judokas.id;
+where new.`juduka 2 id`=judokas.id;
 
 end$$
 delimiter $$
@@ -230,7 +247,25 @@ where new.winner=judokas.id;
 
 end$$
 delimiter ;
-
+ 
+  DELIMITER $$ 
+CREATE PROCEDURE JUDO.set_injury (IN judokas_id INT )
+BEGIN 
+  UPDATE JUDO.judokas 
+  SET judokas.`is injured`=1
+  WHERE judokas.id=judokas_id ;
+  END $$
+  DELIMITER ;
+    DELIMITER $$ 
+CREATE PROCEDURE JUDO.unset_injury (IN judokas_id INT )
+BEGIN 
+  UPDATE JUDO.judokas 
+  SET judokas.`is injured`=0
+  WHERE judokas.id=judokas_id ;
+  END $$
+  DELIMITER ;
+  
+  
 USE JUDO;
 
 INSERT INTO JUDO.categorys (id,gender,`weight category`,`age range`)
@@ -243,58 +278,70 @@ VALUES('MLY', 'M', 'light', 'young'),
 ('FLO', 'F', 'light', 'old'),
 ('FHO', 'F', 'heavy', 'old');
 
-INSERT INTO JUDO.sponsers(id,name)
-VALUES 
-(1,'NIKE'),
-(2,'PUMA'),
-(3,'ADIDAS'),
-(5,'HIKE');
+INSERT INTO judo.sponsers (ID,name)
+VALUES
+    ('301', 'nike'),
+    ('302', 'adidas'),
+    ('303', 'dunder mifflin'),
+    ('304', 'new balance');
 
 INSERT INTO JUDO.teams (name,`win count`)
-VALUES ('Israel',NULL),
-('Germany',NULL),
-('Italy',NULL),
-('Lapid',NULL),
-('Brazil',NULL),
-('USA',NULL),
-('Australia',NULL);
+VALUES  ('ISRAEL', '0'),
+    ('USA', '0'),
+    ('RUSSIA', '0'),
+    ('MEXICO', '0');
 
 INSERT INTO JUDO.teams_has_sponsers(teams_name,sponsers_id,money_contribute)
 VALUES 
-('Israel',2,1000),
-('Germany',1,5000),
-('Brazil',5,2000),
-('Italy',5,10000),
-('Lapid',3,1000);
+('usa', '301', '100000'),
+    ('russia', '304', '25000'),
+    ('israel', '302', '30000'),
+    ('israel', '303', '20300');
 
-
-INSERT INTO JUDO.teammates(name,team,id)
-VALUES 
-('Gabi','ISRAEL',1),#JUDOKA
-('Ella','ISRAEL',2),#JUDOKA
-('Dobby','ISRAEL',3),#COACH
-('Bar','Brazil',4),#JUDOKA
-('Roni','Brazil',5),#JUDOKA
-('Galya','Brazil',6),#COACH
-('Tomer','Germany',7),#JUDOKA
-('Sergio','Germany',8),#JUDOKA
-('Paul','Germany',9),#COACH
-('Rodrigo','Italy',10),#JUDOKA
-('Dudu','Italy',11),#JUDOKA
-('Noam','Italy',12),#COACH
-('Timur','Lapid',13),#JUDOKA
-('Ben','Lapid',14),#JUDOKA
-('Aflek','Lapid',15),#COACH
-('Pumba','USA',16),#JUDOKA
-('Sanji','USA',17),#JUDOKA
-('Zoro','USA',18),#COACH
-('Luffy','Australia',19),#JUDOKA
-('Nami','Australia',20),#JUDOKA
-('Oumar','Australia',21);#COACH
-
-
+INSERT INTO judo.teammates (ID,name,team)
+VALUES
+    ('101', 'bar', 'israel'),
+    ('102', 'gabi', 'israel'),
+    ('103', 'shlomi', 'israel'),
+    ('104', 'sahar', 'israel'),
+    ('105', 'tal', 'israel'),
+    ('106', 'noa', 'israel'),
+    ('107', 'or', 'israel'),
+    ('108', 'ella', 'israel'),
+    ('109', 'juan', 'mexico'),
+    ('110', 'loco', 'mexico'),
+    ('111', 'kaka', 'mexico'),
+    ('112', 'ronaldo', 'mexico'),
+    ('113', 'julia', 'mexico'),
+    ('114', 'jin', 'mexico'),
+    ('115', 'tonic', 'mexico'),
+    ('116', 'silvi', 'mexico'),
+    ('117', 'alex', 'russia'),
+    ('118', 'vladimir', 'russia'),
+    ('119', 'stalin', 'russia'),
+    ('120', 'gavi', 'russia'),
+    ('121', 'xenya', 'russia'),
+    ('122', 'victoria', 'russia'),
+    ('123', 'alexa', 'russia'),
+    ('124', 'maria', 'russia'),
+    ('125', 'derek', 'usa'),
+    ('126', 'post', 'usa'),
+    ('127', 'justin', 'usa'),
+    ('128', 'lil wayne', 'usa'),
+    ('129', 'madona', 'usa'),
+    ('130', 'britny', 'usa'),
+    ('131', 'rihanna', 'usa'),
+    ('132', 'beyonce', 'usa'),
+    ('133', 'elkoubi', 'israel'),
+    ('134', 'jon', 'usa'),
+    ('135', 'putin', 'russia'),
+    ('136', 'pablo', 'mexico');
+    
 INSERT INTO JUDO.coaches(id,`years exp`)
-VALUES (3,7),(6,2),(9,10),(12,12),(15,3),(18,1),(21,10);
+VALUES ('133', '7'),
+    ('134', '5'),
+    ('135', '4'),
+    ('136', '11');
 
 
 INSERT INTO JUDO.judokas(id,weight,gender,`coach id`,age,category,`is injured`,wins,`game played`)
@@ -316,11 +363,11 @@ VALUES
 
 INSERT INTO judge(id,name,`battle count`)
 VALUES 
-(1,'OMRI',69),
-(2,'PINHAS',62),
-(3,'SHALOM',15),
-(4,'SHAHAR',10);
-
+ ('203', 'shalom', '173'),
+    ('204', 'shlomi', '11'),
+    ('205', 'shmuel', '132'),
+    ('206', 'shimon', '111'),
+    ('207', 'shuky', '265');
 
 
 
