@@ -245,7 +245,7 @@ update judo.judokas
 set `wins` =`wins`+1
 where new.winner=judokas.id;
 
-end$$
+battlesend$$
 delimiter ;
  
   DELIMITER $$ 
@@ -265,7 +265,14 @@ BEGIN
   END $$
   DELIMITER ;
   
-  
+DELIMITER $$ 
+CREATE PROCEDURE JUDO.set_foul (IN id1 int,IN judokas_id INT, IN foul_type int,in battle_id int ,in judge_id int)
+BEGIN 
+ insert into fouls (id,`foul type`,judokas_id,battles_id,battles_judge_id)
+ values (id1,foul_type,judokas_id,battle_id,judge_id);
+  END $$
+  DELIMITER ;
+    
 USE JUDO;
 
 INSERT INTO JUDO.categorys (id,gender,`weight category`,`age range`)
