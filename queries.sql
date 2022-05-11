@@ -28,3 +28,22 @@ select teammates.name,count(fouls.judokas_id) as fouls
 from teammates,fouls
 where fouls.judokas_id=teammates.id
 group by teammates.id;
+
+-- list of judge 207 most judged category
+
+SELECT judge.name,battles.category,count(battles.category) as battles_count
+FROM judge
+RIGHT JOIN battles ON battles.judge_id=judge.id
+WHERE battles.judge_id='207'
+GROUP BY battles.category
+ORDER BY  count(battles.category) DESC LIMIT 1;
+
+-- every category winner of the comp
+
+SELECT teammates.name,category,count(`battle results`.winner) as result
+FROM judokas,`battle results`,teammates
+WHERE judokas.id=`battle results`.winner and  judokas.id=teammates.id
+GROUP BY judokas.id,judokas.category
+ORDER BY  result DESC 
+LIMIT 4;
+
