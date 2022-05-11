@@ -18,7 +18,7 @@ from categorys,judokas
 where judokas.category=categorys.id
 group by categorys.id;
 
--- list of shuky(207) battles
+-- list of shlomi(204) battles
 
 select * from battles where judge_id=204;
 
