@@ -1,4 +1,4 @@
-
+use judo;
 -- get all male judokas from category heavy and old order by win count
 select  teammates.id,name,team,weight,gender,`coach id`,age,category,`is injured`,wins,`game played`
 from teammates 
@@ -20,7 +20,7 @@ group by categorys.id;
 
 -- list of shuky(207) battles
 
-select * from battles where judge_id=207;
+select * from battles where judge_id=204;
 
 
 -- list of judokas fouls
@@ -29,7 +29,7 @@ from teammates,fouls
 where fouls.judokas_id=teammates.id
 group by teammates.id;
 
--- list of judge 207 most judged category
+-- list of judge 204 most judged category
 
 SELECT judge.name,battles.category,count(battles.category) as battles_count
 FROM judge
@@ -46,4 +46,11 @@ WHERE judokas.id=`battle results`.winner and  judokas.id=teammates.id
 GROUP BY judokas.id,judokas.category
 ORDER BY  result DESC 
 LIMIT 4;
+
+-- get list of all judokas precentage of victory
+
+select  teammates.name,judokas.wins/judokas.`game played` as win_ratio
+from teammates,judokas
+where teammates.id = judokas.id;
+
 
