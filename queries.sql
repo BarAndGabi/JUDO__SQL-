@@ -45,7 +45,7 @@ FROM judokas,`battle results`,teammates
 WHERE judokas.id=`battle results`.winner and  judokas.id=teammates.id
 GROUP BY judokas.id,judokas.category
 ORDER BY  result DESC 
-LIMIT 4;
+LIMIT 8;
 
 -- get list of all judokas precentage of victory
 
