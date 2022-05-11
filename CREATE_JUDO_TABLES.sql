@@ -294,6 +294,13 @@ UPDATE JUDO.teams
   
   END $$
   DELIMITER ;
+CREATE FUNCTION give_category(category_id varchar(3))
+RETURNS INT  deterministic
+RETURN (SELECT judokas.id
+FROM judokas,`battle results`,teammates
+WHERE judokas.id=`battle results`.winner and  judokas.id=teammates.id and category=category_id
+GROUP BY judokas.id,judokas.category
+ORDER BY  count(`battle results`.winner) DESC,category DESC LIMIT 1);
 
 USE JUDO;
 -- -----------------------------------------------------
