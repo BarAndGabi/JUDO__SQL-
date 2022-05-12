@@ -539,3 +539,4 @@ call judo.set_battle_result    ('445', '7', '3', '2');
 call judo.set_battle_result    ('446', '3', '3', '1');
 call judo.set_battle_result    ('447', '0', '0', '2');
 call judo.set_battle_result    ('448', '7', '5', '1');
+
