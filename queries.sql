@@ -107,4 +107,8 @@ Select `win type`, (Count(`win type`)*100/battle_count() ) as win_precentage
 FROM `battle results`
 Group BY  `win type`;
 
+select teammates.name,teammates.id 
+from teammates, judokas
+where judokas.`is injured`>0 and teammates.id =judokas.id;
+
 
