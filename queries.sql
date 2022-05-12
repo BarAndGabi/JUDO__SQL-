@@ -39,13 +39,6 @@ GROUP BY battles.category
 ORDER BY  count(battles.category) DESC LIMIT 1;
 
 -- every category winner of the comp
-
-SELECT teammates.name,category,count(`battle results`.winner) as result
-FROM judokas,`battle results`,teammates
-WHERE judokas.id=`battle results`.winner and  judokas.id=teammates.id 
-GROUP BY judokas.id,judokas.category
-ORDER BY  result DESC,category DESC;
-drop function give_category;
 CREATE FUNCTION give_category(category_id varchar(3))
 RETURNS INT  deterministic
 RETURN (SELECT judokas.id
@@ -59,4 +52,34 @@ SELECT teammates.name,categorys.id,count(`battle results`.winner) as 'Win Count'
 FROM categorys,teammates,`battle results`
 WHERE teammates.id=give_category(categorys.id) and give_category(categorys.id)=`battle results`.winner
 GROUP BY teammates.id,categorys.id;
+-- Highest sponsor payer in the Olympics
+SELECT teams_name as 'Team',sponsers.name as 'Sponsors name' ,max(money_contribute) as 'Highest payer'
+FROM teams_has_sponsers,teams,sponsers
+WHERE teams_has_sponsers.sponsers_id=sponsers.id
+GROUP BY teams_name,sponsers.id LIMIT 1;
 
+-- All the judokas that won with 'ippon' 
+SELECT `battle results`.id,teammates.name,judge.name
+FROM `battle results`,teammates,judge
+WHERE `battle results`.`win type`='ippon' and `battle results`.winner=teammates.id
+GROUP BY teammates.name ,judge.name,`battle results`.id;
+
+-- How many ippons did lil wayne do
+SELECT teammates.name,count(`battle results`.winner)
+FROM `battle results`,teammates
+WHERE `battle results`.`win type`='ippon' and teammates.name='lil wayne' and `battle results`.winner=(SELECT teammates.id as lil_Wayne
+FROM teammates
+WHERE teammates.name="lil wayne");
+
+-- Avergae age in each category
+CREATE FUNCTION AVG_Every_Category(category_id varchar(3))
+RETURNS FLOAT deterministic
+RETURN(SELECT AVG(judokas.age)
+FROM judokas
+WHERE judokas.category=category_id);
+
+SELECT AVG_Every_Category(categorys.id),categorys.id
+FROM categorys
+GROUP BY categorys.id;
+
+-- 
