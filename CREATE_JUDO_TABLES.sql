@@ -308,6 +308,14 @@ RETURN(SELECT AVG(judokas.age)
 FROM judokas
 WHERE judokas.category=category_id); 
 
+CREATE FUNCTION sum_of_fouls(team_name varchar(15))
+RETURNS INT deterministic
+RETURN (SELECT sum(sumOF.counter)
+FROM (SELECT count(judokas_id) as counter
+FROM  teammates,fouls
+WHERE teammates.id=fouls.judokas_id and teammates.team=team_name
+GROUP BY teammates.id)as sumOF ) ;
+
 USE JUDO;
 -- -----------------------------------------------------
 -- 	Inserts
