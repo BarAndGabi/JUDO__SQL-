@@ -72,12 +72,6 @@ FROM teammates
 WHERE teammates.name="lil wayne");
 
 -- Average age in each category
-CREATE FUNCTION AVG_Every_Category(category_id varchar(3))
-RETURNS FLOAT deterministic
-RETURN(SELECT AVG(judokas.age)
-FROM judokas
-WHERE judokas.category=category_id);
-
 SELECT AVG_Every_Category(categorys.id),categorys.id
 FROM categorys
 GROUP BY categorys.id;
@@ -88,8 +82,12 @@ FROM judokas,teammates
 WHERE judokas.id=teammates.id and teammates.team='usa'
 GROUP BY teammates.id;
 
--- Team with the least fouls
-
+-- Team with the most fouls
+SELECT teams.name,sum_of_fouls(teams.name) as 'fouls commited'
+FROM teams
+ORDER BY 'fouls commited' DESC LIMIT 1;
 -- How much money was spend for this Olympic's
 SELECT SUM(money_contribute)
 FROM teams_has_sponsers;
+
+
