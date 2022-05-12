@@ -112,4 +112,8 @@ select teammates.name,teammates.id
 from teammates, judokas
 where judokas.`is injured`>0 and teammates.id =judokas.id;
 
-
+-- How many wins per how many money was given
+SELECT teams_has_sponsers.teams_name,teams.`win count`,sum(money_contribute)
+FROM teams_has_sponsers,teams
+WHERE teams_has_sponsers.teams_name=teams.name
+GROUP BY teams_has_sponsers.teams_name;
