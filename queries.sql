@@ -96,3 +96,10 @@ FROM teammates
 WHERE teammates.team='mexico') or `juduka 2 id` in (SELECT teammates.id 
 FROM teammates
 WHERE teammates.team='mexico');
+
+-- wins of 2023-08-06
+SELECT  teammates.id,teammates.name,count(winner) as win_count
+from teammates,`battle results`,battles
+WHERE battles.date='2023-08-06' and battles.id=`battle results`.id and winner=teammates.id
+group by teammates.id
+order by win_count desc;
