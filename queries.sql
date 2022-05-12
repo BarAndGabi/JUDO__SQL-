@@ -18,10 +18,8 @@ from categorys,judokas
 where judokas.category=categorys.id
 group by categorys.id;
 
--- list of shuky(207) battles 4
-
-select * from battles where judge_id=207;
-
+-- list of shlomy(204) battles 4
+select * from battles where judge_id=204;
 
 -- list of judokas fouls 5
 select teammates.name,count(fouls.judokas_id) as fouls
@@ -103,3 +101,10 @@ from teammates,`battle results`,battles
 WHERE battles.date='2023-08-06' and battles.id=`battle results`.id and winner=teammates.id
 group by teammates.id
 order by win_count desc;
+
+-- win type precentage
+Select `win type`, (Count(`win type`)*100/battle_count() ) as win_precentage
+FROM `battle results`
+Group BY  `win type`;
+
+

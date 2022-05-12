@@ -316,6 +316,10 @@ FROM  teammates,fouls
 WHERE teammates.id=fouls.judokas_id and teammates.team=team_name
 GROUP BY teammates.id)as sumOF ) ;
 
+CREATE FUNCTION battle_count()
+RETURNS int DETERMINISTIC
+return (select count(*) from `battle results`);
+
 USE JUDO;
 -- -----------------------------------------------------
 -- 	Inserts
