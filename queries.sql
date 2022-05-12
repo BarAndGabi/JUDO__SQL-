@@ -71,7 +71,7 @@ WHERE `battle results`.`win type`='ippon' and teammates.name='lil wayne' and `ba
 FROM teammates
 WHERE teammates.name="lil wayne");
 
--- Avergae age in each category
+-- Average age in each category
 CREATE FUNCTION AVG_Every_Category(category_id varchar(3))
 RETURNS FLOAT deterministic
 RETURN(SELECT AVG(judokas.age)
@@ -82,4 +82,14 @@ SELECT AVG_Every_Category(categorys.id),categorys.id
 FROM categorys
 GROUP BY categorys.id;
 
--- 
+-- Average of the USA team
+SELECT teammates.name,AVG(judokas.age)
+FROM judokas,teammates
+WHERE judokas.id=teammates.id and teammates.team='usa'
+GROUP BY teammates.id;
+
+-- Team with the least fouls
+
+-- How much money was spend for this Olympic's
+SELECT SUM(money_contribute)
+FROM teams_has_sponsers;
