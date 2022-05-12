@@ -302,6 +302,12 @@ WHERE judokas.id=`battle results`.winner and  judokas.id=teammates.id and catego
 GROUP BY judokas.id,judokas.category
 ORDER BY  count(`battle results`.winner) DESC,category DESC LIMIT 1);
 
+CREATE FUNCTION AVG_Every_Category(category_id varchar(3))
+RETURNS FLOAT deterministic
+RETURN(SELECT AVG(judokas.age)
+FROM judokas
+WHERE judokas.category=category_id); 
+
 USE JUDO;
 -- -----------------------------------------------------
 -- 	Inserts
