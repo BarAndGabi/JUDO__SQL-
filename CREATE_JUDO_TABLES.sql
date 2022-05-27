@@ -291,7 +291,6 @@ UPDATE JUDO.teams
   WHERE teams.name=team1 ; 
   insert into judo.`battle results` (id,`judoka 1 points`,`judoka 2 points`,winner,`win type`)
   VALUes (id1,judoka1_points,judoka2_points,winner1,win_type);
-  
   END $$
   DELIMITER ;
 CREATE FUNCTION give_category(category_id varchar(3))
